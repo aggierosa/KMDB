@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.pagination import PageNumberPagination
+import ipdb
 
 from .models import User
 from .serializer import LoginSerializer, UserSerializer
@@ -54,8 +55,11 @@ class UserDetailAuthView(APIView):
 
         return Response(serializer.data)
 
-class LoginView(APIView):
+
+class LoginBView(APIView):
     def post(self, request):
+
+
         serializer = LoginSerializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)

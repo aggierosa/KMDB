@@ -1,9 +1,11 @@
 from django.urls import path
 
-from rest_framework.authtoken import views
-from .views import LoginView, UserView
+from .views import LoginBView, UserView, UserAuthView, UserDetailAuthView
+
 
 urlpatterns = [
-    path("users/login/", LoginView.as_view()),
-    path("users/", UserView.as_view())
+    path("users/login/", LoginBView.as_view()),
+    path("users/register/", UserView.as_view()),
+    path("users/", UserAuthView.as_view()),
+    path("users/<int:user_id>/", UserDetailAuthView.as_view())
 ]

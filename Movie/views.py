@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView, Response, status
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.pagination import PageNumberPagination
 
@@ -21,7 +21,23 @@ class MovieView(APIView, PageNumberPagination):
 
         # paginação
 
-class MovieViewDetail(APIView):
+class MoviePostAuth(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        serializer = MovieSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+
+        return Response(serializer.data, status.HTTP_201_CREATED)   
+
+     
+class MovieViewDetailAuth(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, movie_id):
         try:
@@ -36,24 +52,6 @@ class MovieViewDetail(APIView):
 
         return Response(serializer.data)
 
-
-class MovieViewAuth(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
-
-    def post(self, request):
-        serializer = MovieSerializer(data=request.data)
-
-        serializer.is_valid(raise_exception=True)
-
-        serializer.save()
-
-        return Response(serializer.data, status.HTTP_201_CREATED)    
-
-
-class MovieViewDetailAuth(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
 
     def patch(self, request, movie_id):
         try:
